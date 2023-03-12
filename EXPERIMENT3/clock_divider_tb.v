@@ -25,7 +25,7 @@ module clock_divider_tb();
     reg clk_50;
     //Output
     wire clk;
-    
+    //clock_divider_instantiation
     clock_divider DUT(.clk_50(clk_50), .clk(clk));
     initial
         begin
