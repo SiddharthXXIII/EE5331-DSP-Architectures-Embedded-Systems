@@ -28,9 +28,9 @@ module johnson4bit(q3,q2,q1,q0,clk_50,rst);
 	clock_divider C1(.clk_50(clk_50), .clk(clk));
     
 	dflipflop_withreset D3(q3,q3bar,q0bar,rst,clk);
-    dflipflop_withreset D2(q2,q2bar,q3,rst,clk);
-    dflipflop_withreset D1(q1,q1bar,q2,rst,clk);
-    dflipflop_withreset D0(q0,q0bar,q1,rst,clk);
+  dflipflop_withreset D2(q2,q2bar,q3,rst,clk);
+  dflipflop_withreset D1(q1,q1bar,q2,rst,clk);
+  dflipflop_withreset D0(q0,q0bar,q1,rst,clk);
 	 
 endmodule
 
