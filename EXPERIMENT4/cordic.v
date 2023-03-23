@@ -41,21 +41,21 @@ module cordic(input clk ,
     wire signed [31:0] atan8, atan9, atan10, atan11, atan12, atan13, atan14, atan15;
     
     assign atan0 = 32'd450000;
-	  assign atan1 = 32'd265650;
-	  assign atan2 = 32'd140362;
-	  assign atan3 = 32'd71250;
-	  assign atan4 = 32'd35763;
-	  assign atan5 = 32'd17899;
-	  assign atan6 = 32'd8951;
-	  assign atan7 = 32'd4476;
-	  assign atan8 = 32'd2238;
-	  assign atan9 = 32'd1119;
-	  assign atan10 = 32'd559;
-	  assign atan11 = 32'd279;
-	  assign atan12 = 32'd140;
-	  assign atan13 = 32'd70;
-	  assign atan14 = 32'd35;
-	  assign atan15 = 32'd17;
+	assign atan1 = 32'd265650;
+	assign atan2 = 32'd140362;
+	assign atan3 = 32'd71250;
+	assign atan4 = 32'd35763;
+	assign atan5 = 32'd17899;
+	assign atan6 = 32'd8951;
+	assign atan7 = 32'd4476;
+	assign atan8 = 32'd2238;
+	assign atan9 = 32'd1119;
+	assign atan10 = 32'd559;
+	assign atan11 = 32'd279;
+	assign atan12 = 32'd140;
+	assign atan13 = 32'd70;
+	assign atan14 = 32'd35;
+	assign atan15 = 32'd17;
 	
 	always @(posedge clk)
 	   begin
@@ -81,13 +81,13 @@ module cordic(input clk ,
 	cordic_update  cordic12(.clk(clk), .i(5'd12), .x(xc[11]), .y(yc[11]), .z(zc[11]), .atan(atan12), .x_next(xc[12]), .y_next(yc[12]), .z_next(zc[12]));
 	cordic_update  cordic13(.clk(clk), .i(5'd13), .x(xc[12]), .y(yc[12]), .z(zc[12]), .atan(atan13), .x_next(xc[13]), .y_next(yc[13]), .z_next(zc[13]));
 	cordic_update  cordic14(.clk(clk), .i(5'd14), .x(xc[13]), .y(yc[13]), .z(zc[13]), .atan(atan14), .x_next(xc[14]), .y_next(yc[14]), .z_next(zc[14]));
-  cordic_update  cordic15(.clk(clk), .i(5'd15), .x(xc[14]), .y(yc[14]), .z(zc[14]), .atan(atan15), .x_next(xc[15]), .y_next(yc[15]), .z_next(zc[15]));
+    cordic_update  cordic15(.clk(clk), .i(5'd15), .x(xc[14]), .y(yc[14]), .z(zc[14]), .atan(atan15), .x_next(xc[15]), .y_next(yc[15]), .z_next(zc[15]));
     
     assign dummy1 = xc[15];
     assign dummy2 = yc[15];
     assign dummy3 = zc[15];
     assign r = (0.6073)*xc[15];
-	  assign phi = zc[15];
+	assign phi = zc[15];
               
 endmodule
 
@@ -98,7 +98,7 @@ module cordic_rotate(input clk ,
                      output reg signed [31:0] y_rot,
                      output reg signed [31:0] z_rot);
                      
-    always @(posedge clk)
+    always @(*)
         begin
             if( x < 0 && y >= 0 )
                 begin
@@ -131,11 +131,10 @@ module cordic_update(input clk ,
                      output reg signed [31:0] y_next,
                      output reg signed [31:0] z_next);
                      
-    always @(posedge clk)
+    always @(*)
         begin
             x_next = x +{ y > 0 ? (y >>> i) : -(y >>> i)};
             y_next = y +{ y > 0 ? -(x >>> i) : (x >>> i)};
             z_next = z +{ y > 0 ? atan : -atan};
         end
 endmodule
-
