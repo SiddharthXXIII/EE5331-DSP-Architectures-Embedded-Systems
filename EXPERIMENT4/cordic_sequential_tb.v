@@ -38,7 +38,9 @@ module cordic_tb();
             clk = 1'b0;
             
             #1 x_in = 8'd8; y_in = 8'd6;
-            #17 x_in = 8'd6; y_in = 8'd8; 
+            #50 x_in = -8'd8; y_in = 8'd6;
+            #50 x_in = -8'd8; y_in = -8'd6;
+            #50 x_in = 8'd8; y_in = -8'd6; 
         end
         
     initial
@@ -47,4 +49,3 @@ module cordic_tb();
         end
      always #1 clk = ~clk;
 endmodule
-
