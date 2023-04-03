@@ -1,11 +1,13 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: IIT MADRAS
+// Engineer: ANANNYAA PATHAK
+// Engineer: HEMANT GEDAM
+// Engineer: SIDDHARTH KOLTE
 // 
-// Create Date: 03.04.2023 10:28:09
+// Create Date: 03.04.2023 09:46:54
 // Design Name: 
-// Module Name: cordic2_tb
+// Module Name: cordic2
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
