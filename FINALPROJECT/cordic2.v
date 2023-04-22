@@ -26,9 +26,9 @@ module cordic2(input clk ,
               input signed [8:0] x_in ,
               input signed [8:0] y_in ,
               input signed [8:0] z_in , 
-              output signed [31:0] dummy1,
-              output signed [31:0] dummy2,
-              output signed [31:0] dummy3);
+              output signed [31:0] z_out,
+              output signed [31:0] x_out,
+              output signed [31:0] y_out);
               
     wire signed [31:0] xc [7:0];
     wire signed [31:0] yc [7:0];
@@ -41,9 +41,9 @@ module cordic2(input clk ,
     reg signed [8:0] x,y,z;         
 
     wire signed [31:0] x_sh ,y_sh;
-    assign dummy1 = zc[4];
-    assign dummy2 = x_sh;
-    assign dummy3 = y_sh;
+    assign z_out = zc[6];
+    assign x_out = x_sh;
+    assign y_out = y_sh;
 
     always @(posedge clk)
 	   begin
@@ -69,6 +69,7 @@ module cordic2(input clk ,
     
 endmodule
 
+/* The module to bring the angle in the required range i.e. -45 degrees to +45 degrees */
 module cordic_rotate(input clk ,
                      input signed [8:0] x,
                      input signed [8:0] y,
@@ -77,7 +78,7 @@ module cordic_rotate(input clk ,
                      output reg signed [31:0] y_rot,
                      output reg signed [31:0] z_rot);
                      
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < -135 && x || y)
                 begin
@@ -112,6 +113,7 @@ module cordic_rotate(input clk ,
         end                     
 endmodule
 
+/* The module for rotation by friend angles. The angle of rotation is either 0 or 16.2600 or 36.8700 degrees*/
 module cordic_friendly_angle(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -125,7 +127,7 @@ module cordic_friendly_angle(input clk ,
 	assign atan1 = 32'd162600;
 	assign atan2 = 32'd368700;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < -265650)
                 begin
@@ -143,7 +145,7 @@ module cordic_friendly_angle(input clk ,
                 begin
                     x_next = 25*x + 0*y;
                     y_next = 25*y - 0*x;                    
-                    z_next = z + atan0;
+                    z_next = z - atan0;
                 end
             else if( z >= 103050 && z < 265650)
                 begin
@@ -160,18 +162,20 @@ module cordic_friendly_angle(input clk ,
         end
 endmodule
 
+/* The module for dividing by 25 since the magnitude of rotation vector is 25 in friend angles */
 module multiplier1(input clk,
                   input signed [31:0] x,y, 
                   output reg signed [31:0] x_s,
                   output reg signed [31:0] y_s);
 
-    always @(*) 
+    always @(posedge clk) 
         begin
             x_s = {{5{x[31]}},x[31:5]} + {{6{x[31]}},x[31:6]} - {{8{x[31]}},x[31:8]} - {{9{x[31]}},x[31:9]} - {{10{x[31]}},x[31:10]};
             y_s = {{5{y[31]}},y[31:5]} + {{6{y[31]}},y[31:6]} - {{8{y[31]}},y[31:8]} - {{9{y[31]}},y[31:9]} - {{10{y[31]}},y[31:10]};
         end
 endmodule
 
+/* The module for making uniformly scaled redundant(USR) rotations. The angle of rotation is either 0 or 7.1250 degrees*/
 module cordic_usr(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -184,7 +188,7 @@ module cordic_usr(input clk ,
     assign atan0 = 32'd0;
 	assign atan1 = 32'd71250;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < -35630)
                 begin
@@ -196,7 +200,7 @@ module cordic_usr(input clk ,
                 begin
                     x_next = 129*x + 0*y;
                     y_next = 129*y - 0*x;                    
-                    z_next = z + atan0;
+                    z_next = z - atan0;
                 end
             else if( z > 35630)
                 begin
@@ -207,18 +211,20 @@ module cordic_usr(input clk ,
         end
 endmodule
 
+/* The module for dividing by 129 since the magnitude of rotation vector is 129 in uniformly scaled redundant(USR) rotations */
 module multiplier2(input clk,
                   input signed [31:0] x,y, 
                   output reg signed [31:0] x_s,
                   output reg signed [31:0] y_s);
 
-    always @(*) 
+    always @(posedge clk) 
         begin
             x_s = {{7{x[31]}},x[31:7]} - {{14{x[31]}},x[31:14]};
-            y_s = {{7{y[31]}},y[31:7]} + {{14{y[31]}},y[31:14]};
+	    y_s = {{7{y[31]}},y[31:7]} - {{14{y[31]}},y[31:14]};
         end
 endmodule
 
+/* The module for conventional cordic rotations. The angle of rotation is 1.7900 degrees*/
 module cordic_nominal1(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -230,7 +236,7 @@ module cordic_nominal1(input clk ,
     wire signed [31:0] atan0;
     assign atan0 = 32'd17900;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < 0)
                 begin
@@ -247,6 +253,7 @@ module cordic_nominal1(input clk ,
         end
 endmodule
 
+/* The module for conventional cordic rotations. The angle of rotation is 0.8950 degrees*/
 module cordic_nominal2(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -258,7 +265,7 @@ module cordic_nominal2(input clk ,
     wire signed [31:0] atan0;
     assign atan0 = 32'd8950;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < 0)
                 begin
@@ -275,6 +282,7 @@ module cordic_nominal2(input clk ,
         end
 endmodule
 
+/* The module for conventional cordic rotations. The angle of rotation is 0.4480 degrees*/
 module cordic_nominal3(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -286,7 +294,7 @@ module cordic_nominal3(input clk ,
     wire signed [31:0] atan0;
     assign atan0 = 32'd4480;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < 0)
                 begin
@@ -303,6 +311,7 @@ module cordic_nominal3(input clk ,
         end
 endmodule
 
+/* The module for cordic micro rotations. The angle of rotation is equal to k multiplied by 0.1120 degrees, where k is a value between -8 and +8 as per the requirement.*/
 module cordic_micro_rotations1(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -314,7 +323,7 @@ module cordic_micro_rotations1(input clk ,
     wire signed [31:0] atan0;
     assign atan0 = 32'd1120;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < -8960)
                 begin
@@ -420,7 +429,8 @@ module cordic_micro_rotations1(input clk ,
                 end
         end
 endmodule
-        
+
+/* The module for cordic micro rotations. The angle of rotation is equal to k multiplied by 0.0560 degrees, where k is a value between -8 and +8 as per the requirement.*/        
 module cordic_micro_rotations2(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
@@ -432,7 +442,7 @@ module cordic_micro_rotations2(input clk ,
     wire signed [31:0] atan0;
     assign atan0 = 32'd560;
 	
-    always @(*)
+    always @(posedge clk)
         begin
             if( z < -4480)
                 begin
@@ -539,6 +549,7 @@ module cordic_micro_rotations2(input clk ,
         end
 endmodule
 
+/* The module is used for normalizing the sign of output values.*/
 module normalize(input clk ,
                              input signed [31:0] x,
                              input signed [31:0] y,
