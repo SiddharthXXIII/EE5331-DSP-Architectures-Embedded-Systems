@@ -27,11 +27,11 @@ module cordic2_tb();
     reg signed [8:0] x_in;
     reg signed [8:0] y_in;
     reg signed [8:0] z_in;
-    wire signed [31:0] dummy1;
-    wire signed [31:0] dummy2;
-    wire signed [31:0] dummy3;
+    wire signed [31:0] z_out;
+    wire signed [31:0] x_out;
+    wire signed [31:0] y_out;
     
-    cordic2 vector_mode(.clk(clk),.x_in(x_in),.y_in(y_in),.z_in(z_in),.dummy1(dummy1),.dummy2(dummy2),.dummy3(dummy3));
+    cordic2 vector_mode(.clk(clk),.x_in(x_in),.y_in(y_in),.z_in(z_in), .z_out(z_out), .x_out(x_out), .y_out(y_out));
     
     initial
         begin
@@ -40,14 +40,14 @@ module cordic2_tb();
             clk = 1'b0;
             
             #1 x_in = 9'd1; y_in = 9'd0; z_in = 9'd180;
-            #20 x_in = 9'd1; y_in = 9'd0; z_in = 9'd135;
-            #20 x_in = 9'd1; y_in = 9'd0; z_in = -9'd70;
-            #20 x_in = 9'd1; y_in = 9'd0; z_in = 9'd70;
+            #30 x_in = 9'd1; y_in = 9'd0; z_in = 9'd135;
+            #30 x_in = 9'd1; y_in = 9'd0; z_in = -9'd70;
+            #30 x_in = 9'd1; y_in = 9'd0; z_in = 9'd70;
         end
         
     initial
         begin
-            #400 $finish;
+               #400 $finish;
         end
      always #1 clk = ~clk;
 endmodule
